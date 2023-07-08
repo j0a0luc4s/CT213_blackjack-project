@@ -36,11 +36,9 @@ class DQNAgent:
         self,
     ):
         model = models.Sequential()
-        model.add(layers.InputLayer(input_shape = (self.observation_space_dim,)))
-        model.add(layers.Dense(24, activation=activations.linear))
-        model.add(layers.LeakyReLU())
-        model.add(layers.Dense(24, activation=activations.linear))
-        model.add(layers.LeakyReLU())
+        model.add(layers.InputLayer(input_shape = (self.observation_space_dim, )))
+        model.add(layers.Dense(24, activation=activations.relu))
+        model.add(layers.Dense(24, activation=activations.relu))
         model.add(layers.Dense(self.action_space_dim, activation=activations.linear))
         model.compile(loss=losses.mse, optimizer=optimizers.Adam(lr=self.learning_rate))
 
@@ -48,7 +46,7 @@ class DQNAgent:
 
     def get_action(
         self, 
-        observation: tuple
+        observation: tuple,
         ) -> int:
         observation = np.reshape(observation, (1, self.observation_space_dim))
         if random.random() < self.epsilon:
@@ -88,13 +86,13 @@ class DQNAgent:
 
     def load(
         self, 
-        name, 
+        name: str, 
     ):
         self.model.load_weights(name)
 
     def save(
         self, 
-        name, 
+        name: str, 
     ):
         self.model.save_weights(name)
 
