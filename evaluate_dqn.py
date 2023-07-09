@@ -5,8 +5,9 @@ import numpy as np
 import os
 from tqdm import tqdm
 from dqn_agent import DQNAgent
+from utils import plot_history
 
-n_episodes = 1000
+n_episodes = 100
 
 env = gym.make('Blackjack-v1', sab=True, render_mode="human")
 hyperparameters['action_space_dim'] = env.action_space.n
@@ -15,6 +16,8 @@ hyperparameters['observation_space_dim'] = len(env.observation_space)
 agent = DQNAgent(**hyperparameters)
 
 reward_history = []
+moving_average = 0.0
+moving_average_history = []
 
 # Checking if weights from previous learning session exists
 if os.path.exists('blackjack.h5'):
@@ -33,16 +36,14 @@ for episode in tqdm(range(1, n_episodes + 1)):
         next_observation, reward, terminated, truncated, info = env.step(action)
 
         done = terminated or truncated
-        if done:
-            reward_history.append(reward)
+        reward_history.append(reward)
+        alpha = 0.1
+        moving_average = (1 - alpha) * moving_average + alpha * reward
+        moving_average_history.append(moving_average)
         observation = next_observation
         env.render()
 
     if episode % 10 == 0:
-        plt.plot(reward_history, 'b')
-        plt.xlabel('Episode')
-        plt.ylabel('Moving Average')
-        plt.show(block=False)
-        plt.pause(0.1)
+        plot_history(agent, reward_history, moving_average_history, 'evaluate_history')
 
-print(sum(reward_history)/len(reward_history))
+print(f'Win rate: {reward_history.count(1)/(len(reward_history))}')

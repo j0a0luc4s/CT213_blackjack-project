@@ -3,8 +3,9 @@ import matplotlib.pyplot as plt
 import numpy as np
 import os
 from tqdm import tqdm
+from utils import plot_moving_average_history, plot_reward_history
 
-n_episodes = 1000
+n_episodes = 100
 
 env = gym.make('Blackjack-v1', sab=True, render_mode="human")
 
@@ -31,4 +32,4 @@ for episode in tqdm(range(1, n_episodes + 1)):
         plt.show(block=False)
         plt.pause(0.1)
 
-print(sum(reward_history)/len(reward_history))
+print(f'Win rate: {reward_history.count(1)/(len(reward_history))}')
