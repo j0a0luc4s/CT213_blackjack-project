@@ -7,7 +7,7 @@ from tqdm import tqdm
 from dqn_agent import DQNAgent
 from utils import plot_history
 
-n_episodes = 100
+n_episodes = 1000
 
 env = gym.make('Blackjack-v1', sab=True, render_mode="human")
 hyperparameters['action_space_dim'] = env.action_space.n
