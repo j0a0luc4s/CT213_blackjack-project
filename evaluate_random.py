@@ -7,7 +7,7 @@ from tqdm import tqdm
 from utils import plot
 
 # evaluation parameters
-n_episodes = 100
+n_episodes = 500
 alpha = 0.02
 
 # environment
@@ -50,6 +50,8 @@ for episode in tqdm(range(1, n_episodes + 1)):
     if episode % 10 == 0:
         plot(reward_history, ax[0], "Reward History")
         plot(average_history, ax[1], "Average History")
+        fig.savefig("evaluate_random.eps")
+        fig.savefig("evaluate_random.png")
         fig.show()
 
 print(f'Win Percentage: {reward_history.count(1)/len(reward_history)}')

@@ -9,7 +9,7 @@ def plot(history, ax, name):
     plt.pause(0.1)
 
 def reward_engineering_blackjack(observation, action, reward, next_observation, terminated):
-    '''
+    """
     action:
     0: stick
     1: hit
@@ -24,7 +24,7 @@ def reward_engineering_blackjack(observation, action, reward, next_observation, 
 
     action:
     epsilon-greedy action choosen by the agent to be done.
-    '''
+    """
 
     # possible actions
     stick = 0

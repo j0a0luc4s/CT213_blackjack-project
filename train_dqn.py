@@ -56,8 +56,8 @@ for episode in tqdm(range(1, n_episodes + 1)):
     if episode % 10 == 0:
         plot(reward_history, ax0, 'Reward History')
         plot(average_history, ax1, 'Average History')
-        fig0.savefig("reward.eps")
-        fig0.savefig("reward.png")
-        fig1.savefig("average.eps")
-        fig1.savefig("average.png")
+        fig0.savefig("train_reward.eps")
+        fig0.savefig("train_reward.png")
+        fig1.savefig("train_average.eps")
+        fig1.savefig("train_average.png")
         agent.save("blackjack.h5")

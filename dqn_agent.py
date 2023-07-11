@@ -9,28 +9,6 @@ class DQNAgent:
     Represents a Deep Q-Networks (DQN) agent.
     """
     def __init__(
-        """
-        Creates a Deep Q-Networks (DQN) agent.
-
-        :param learning_rate: learning rate of the action-value neural network.
-        :type learning_rate: float.
-        :param initial_epsilon: initial epsilon used in epsilon-greedy policy.
-        :type initial_epsilon: float.
-        :param epsilon_decay: decay of epsilon per iteration.
-        :type epsilon_decay: float.
-        :param final_epsilon: final epsilon used in epsilon-greedy policy.
-        :type final_epsilon: float.
-        :param discount_factor: discount factor of the actio-value neural network.
-        :type discount_factor: float.
-        :param action_space_dim: number of actions.
-        :type action_space_dim: int.
-        :param observation_space_dim: number of dimensions of the feature vector of the observation.
-        :type observation_space_dim: int.
-        :param buffer_size: size of the experience replay buffer.
-        :type buffer_size: int.
-        :param batch_size: size of the experience replay batch.
-        :type batch_size: int.
-        """
         self,
         learning_rate: float,
         initial_epsilon: float,
@@ -42,6 +20,28 @@ class DQNAgent:
         buffer_size: int, 
         batch_size: int
     ):
+        """
+        Creates a Deep Q-Networks (DQN) agent.
+
+        :param learning_rate: learning rate of the action-value neural network.
+        :type learning_rate: float.
+        :param initial_epsilon: initial epsilon used in epsilon-greedy policy.
+        :type initial_epsilon: float.
+        :param epsilon_decay: decay of epsilon per iteration.
+        :type epsilon_decay: float.
+        :param final_epsilon: final epsilon used in epsilon-greedy policy.
+        :type final_epsilon: float.
+        :param discount_factor: discount factor of the action-value neural network.
+        :type discount_factor: float.
+        :param action_space_dim: number of actions.
+        :type action_space_dim: int.
+        :param observation_space_dim: number of dimensions of the feature vector of the observation.
+        :type observation_space_dim: int.
+        :param buffer_size: size of the experience replay buffer.
+        :type buffer_size: int.
+        :param batch_size: size of the experience replay batch.
+        :type batch_size: int.
+        """
         self.learning_rate = learning_rate
 
         self.epsilon = initial_epsilon
@@ -94,6 +94,9 @@ class DQNAgent:
         return np.argmax(self.model.predict(observation))
 
     def get_action_greedy(
+        self, 
+        observation: tuple,
+        ) -> int:
         """
         Chooses an action using a greedy policy.
 
@@ -102,9 +105,6 @@ class DQNAgent:
         :return: chosen action.
         :rtype: int.
         """
-        self, 
-        observation: tuple,
-        ) -> int:
         observation = np.reshape(observation, (1, self.observation_space_dim))
         return np.argmax(self.model.predict(observation))
 
@@ -137,6 +137,9 @@ class DQNAgent:
     def replay(
         self, 
     ):
+        """
+        Learns from memorized experience.
+        """
         # check if the replay buffer has enough iterations, then samples a batch
         if len(self.replay_buffer) <= 2 * self.batch_size:
             return
@@ -181,7 +184,9 @@ class DQNAgent:
         """
         self.model.save_weights(name)
 
-    def decay_epsilon(self):
+    def decay_epsilon(
+        self
+    ):
         """
         Updates the epsilon used for epsilon-greedy action selection.
         """
