@@ -26,26 +26,32 @@ def reward_engineering_blackjack(observation, action, reward, next_observation, 
     epsilon-greedy action choosen by the agent to be done.
     '''
 
+    # possible actions
     stick = 0
     hit = 1
 
+    # destructuring observations
     total, dealer_card, usable_ace = observation
     next_total, next_dealer_card, next_usable_ace = next_observation
 
+    # amplification of gym's reward
     reward = 100 * reward
 
+    # reward for final hand value
     if terminated:
         if next_total > 21:
             reward = reward - 10 * (next_total - 21)
         else:
             reward = reward + 50 * (next_total / 21) ** 4
 
+    # threshold below of which the agent should hit
     hit_threshold = [17, 11, 13, 8, 8, 8, 16, 16, 16, 17]
     if action == stick:
         reward = reward - 5 * (hit_threshold[dealer_card - 1] - 1 - total)
     if action == hit:
         reward = reward + 5 * (hit_threshold[dealer_card - 1] - total)
 
+    # incentive for hitting on ace
     if total == 1 and action == hit:
         reward = reward + 20
 
