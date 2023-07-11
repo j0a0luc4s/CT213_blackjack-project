@@ -1,16 +1,12 @@
 import numpy as np
 import matplotlib.pyplot as plt
 
-def plot_history(agent, reward_history, moving_average_history, fig_name):
-    plt.plot(moving_average_history, 'r', linewidth = 2)
-    plt.plot(reward_history, 'b')
-    plt.xlabel('Episode')
-    plt.ylabel('Value')
-    plt.legend(['Reward Moving Average', 'Reward'])
-    plt.show(block=False)
+def plot(history, ax, name):
+    ax.plot(history, 'r')
+    ax.set_xlabel('Episode')
+    ax.set_ylabel('Value')
+    ax.set_title(name)
     plt.pause(0.1)
-    plt.savefig(f'{fig_name}.png')
-    agent.save("blackjack.h5")
 
 def reward_engineering_blackjack(observation, action, reward, next_observation, terminated):
     '''
@@ -29,23 +25,28 @@ def reward_engineering_blackjack(observation, action, reward, next_observation, 
     action:
     epsilon-greedy action choosen by the agent to be done.
     '''
-    if observation[0] <= 10:
-        if action == 1:
-            reward += 0.5
+
+    stick = 0
+    hit = 1
+
+    total, dealer_card, usable_ace = observation
+    next_total, next_dealer_card, next_usable_ace = next_observation
+
+    reward = 100 * reward
+
+    if terminated:
+        if next_total > 21:
+            reward = reward - 10 * (next_total - 21)
         else:
-            reward -= 5
+            reward = reward + 50 * (next_total / 21) ** 4
 
-    if observation[0] == 10:
-        if observation[2] == True and action == 1:
-            reward += 1
+    hit_threshold = [17, 11, 13, 8, 8, 8, 16, 16, 16, 17]
+    if action == stick:
+        reward = reward - 5 * (hit_threshold[dealer_card - 1] - 1 - total)
+    if action == hit:
+        reward = reward + 5 * (hit_threshold[dealer_card - 1] - total)
 
-    if observation[0] == 21 and action != 0:
-        reward -= 5
-
-    if observation[0] > 21 or next_observation[0] > 21:
-        reward -= 5
-
-    if 17 <= observation[0] <= 21 and action == 0:
-        reward += 2 * (observation[0] - 17)/(21 - 17)
+    if total == 1 and action == hit:
+        reward = reward + 20
 
     return reward

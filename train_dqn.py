@@ -6,9 +6,10 @@ import os
 from dqn_agent import DQNAgent
 from hyperparameters import hyperparameters
 from tqdm import tqdm
-from utils import plot_history, reward_engineering_blackjack
+from utils import plot, reward_engineering_blackjack
 
-n_episodes = 1000
+n_episodes = 2000
+alpha = 0.02
 
 env = gym.make("Blackjack-v1", sab=True)
 hyperparameters['action_space_dim'] = env.action_space.n
@@ -16,17 +17,11 @@ hyperparameters['observation_space_dim'] = len(env.observation_space)
 
 agent = DQNAgent(**hyperparameters)
 
-# Checking if weights from previous learning session exists
-if os.path.exists('blackjack.h5'):
-    print('Loading weights from previous learning session.')
-    agent.load("blackjack.h5")
-else:
-    print('No weights found from previous learning session. Unable to proceed.')
-    exit(-1)
+fig0, ax0 = plt.subplots()
+fig1, ax1 = plt.subplots()
 
-moving_average = 0.0
-moving_average_history = []
-reward_history = []
+reward_history = [0.0]
+average_history = [0.0]
 
 for episode in tqdm(range(1, n_episodes + 1)):
     observation, info = env.reset()
@@ -37,19 +32,21 @@ for episode in tqdm(range(1, n_episodes + 1)):
         next_observation, reward, terminated, truncated, info = env.step(action)
 
         reward = reward_engineering_blackjack(observation, action, reward, next_observation, terminated)
-        reward_history.append(reward)
-
         agent.append_experience(observation, action, reward, next_observation, terminated)
         agent.replay()
 
         done = terminated or truncated
-        alpha = 0.1
-        moving_average = (1 - alpha) * moving_average + alpha * reward
-        moving_average_history.append(moving_average)
+
         observation = next_observation
 
+    reward_history.append(reward)
+    average_history.append((1 - alpha)*average_history[-1] + alpha*reward)
+
     if episode % 10 == 0:
-        plot_history(agent, reward_history, moving_average_history, 'train_history')
-
-    agent.decay_epsilon()
-
+        plot(reward_history, ax0, 'Reward History')
+        plot(average_history, ax1, 'Average History')
+        fig0.savefig("reward.eps")
+        fig0.savefig("reward.png")
+        fig1.savefig("average.eps")
+        fig1.savefig("average.png")
+        agent.save("blackjack.h5")

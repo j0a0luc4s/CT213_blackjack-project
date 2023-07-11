@@ -1,8 +1,8 @@
 from collections import deque
 import numpy as np
 import random
-#from tensorflow.keras import models, layers, optimizers, activations, losses
-from keras import models, layers, optimizers, activations, losses
+from tensorflow.keras import models, layers, optimizers, activations, losses
+#from keras import models, layers, optimizers, activations, losses
 
 class DQNAgent:
     def __init__(
@@ -35,7 +35,7 @@ class DQNAgent:
 
     def make_model(
         self,
-    ):
+    ) -> models.Sequential:
         model = models.Sequential()
         model.add(layers.InputLayer(input_shape = (self.observation_space_dim, )))
         model.add(layers.Dense(24, activation=activations.relu))
@@ -52,6 +52,13 @@ class DQNAgent:
         observation = np.reshape(observation, (1, self.observation_space_dim))
         if random.random() < self.epsilon:
             return random.randrange(self.action_space_dim)
+        return np.argmax(self.model.predict(observation))
+
+    def get_action_greedy(
+        self, 
+        observation: tuple,
+        ) -> int:
+        observation = np.reshape(observation, (1, self.observation_space_dim))
         return np.argmax(self.model.predict(observation))
 
     def append_experience(
@@ -82,8 +89,9 @@ class DQNAgent:
                 target[0][action] = reward
             observations.append(observation[0])
             targets.append(target[0])
-        
+
         self.model.fit(np.array(observations), np.array(targets), epochs=1, verbose=0)
+        self.decay_epsilon()
 
     def load(
         self, 
