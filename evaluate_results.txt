@@ -1,11 +1,11 @@
 500 iterations
 
 DQN:
-Win Percentage: 0.42115768463073855
+Win Percentage: 0.41317365269461076
 Tie percentage: 0.08183632734530938
-Loss percentage: 0.49700598802395207
+Loss percentage: 0.5049900199600799
 Overflow Count: 30
-Overflow Amount: 42
+Overflow Amount: 46
 
 random:
 Win Percentage: 0.29740518962075846
