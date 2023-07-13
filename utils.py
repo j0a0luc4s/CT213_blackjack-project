@@ -52,7 +52,7 @@ def reward_engineering_blackjack(observation, action, reward, next_observation, 
         reward = reward + 5 * (hit_threshold[dealer_card - 1] - total)
 
     # incentive for hitting on ace
-    if total == 1 and action == hit:
+    if usable_ace and action == hit:
         reward = reward + 20
 
     return reward
