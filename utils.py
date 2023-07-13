@@ -2,7 +2,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 
 def plot(history, ax, name):
-    ax.plot(history, 'b')
+    ax.plot(history, 'r')
     ax.set_xlabel('Episode')
     ax.set_ylabel('Value')
     ax.set_title(name)
@@ -52,7 +52,7 @@ def reward_engineering_blackjack(observation, action, reward, next_observation, 
         reward = reward + 5 * (hit_threshold[dealer_card - 1] - total)
 
     # incentive for hitting on ace
-    if usable_ace and action == hit:
+    if total == 1 and action == hit:
         reward = reward + 20
 
     return reward
