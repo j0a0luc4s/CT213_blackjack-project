@@ -2,7 +2,6 @@ from collections import deque
 import numpy as np
 import random
 from tensorflow.keras import models, layers, optimizers, activations, losses
-#from keras import models, layers, optimizers, activations, losses
 
 class DQNAgent:
     """
