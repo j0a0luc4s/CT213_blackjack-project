@@ -2,7 +2,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 
 def plot(history, ax, name):
-    ax.plot(history, 'r')
+    ax.plot(history, 'b')
     ax.set_xlabel('Episode')
     ax.set_ylabel('Value')
     ax.set_title(name)
